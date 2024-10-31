@@ -1,23 +1,32 @@
+"use client";
 import Image from "next/image";
 import "./styles.css";
+import { useState } from "react";
 
 export const Header = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
   return (
     <>
       <div className="bg-black w-96 h-20 bg-opacity-50 rounded-full mt-5 flex items-center justify-around shadow-black shadow-lg">
-        <div className="">
+        <div>
           <Image
-            src={"/icon.png"}
-            width={"50"}
-            height={"50"}
+            src="/icon.png"
+            width={50}
+            height={50}
             alt="icon"
-            objectFit="contain"
+            style={{ objectFit: "contain" }}
           />
         </div>
-        <p className="text-white">¿ Que comemos hoy ?</p>
+        <h1 className="text-white font-primary text-xl text-shadow">
+          ¿ Que comemos hoy ?
+        </h1>
         <div className="w-fit">
           <label className="hamburger">
-            <input type="checkbox" />
+            <input type="checkbox" checked={isOpen} onChange={toggleSidebar} />
             <svg viewBox="0 0 32 32">
               <path
                 className="line line-top-bottom"
@@ -27,6 +36,10 @@ export const Header = () => {
             </svg>
           </label>
         </div>
+        <aside className={`sidebar z-50 ${isOpen ? "open" : ""}`}>
+          <p>Este es el contenido del sidebar</p>
+        </aside>
+        {isOpen && <div className="backdrop" onClick={toggleSidebar}></div>}
       </div>
     </>
   );
