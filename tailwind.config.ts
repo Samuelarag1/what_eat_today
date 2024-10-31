@@ -13,7 +13,7 @@ const config: Config = {
         foreground: "var(--foreground)",
       },
       fontFamily: {
-        primary: ["Protest Strike", "serif"],
+        primary: ["ProtestStrike", "Kanit", "Arial", "Helvetica", "sans-serif"], // Agrega tu fuente personalizada
       },
     },
   },
