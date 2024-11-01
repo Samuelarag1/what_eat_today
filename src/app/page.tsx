@@ -66,7 +66,7 @@ export default function Home() {
                 <DialogTitle>Ingredientes</DialogTitle>
                 <DialogDescription>
                   Podes seleccionar o buscar los ingredientes que tenes en tu
-                  casa
+                  casa.
                 </DialogDescription>
               </DialogHeader>
               <Input placeholder="Buscar ingredientes" />
