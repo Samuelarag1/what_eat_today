@@ -14,9 +14,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import data from "../../data.json";
 import { IMIngredients } from "../../Models/Ingredient";
-
 export default function Home() {
-  const [ingredients, setIngredients] = useState<IMIngredients[]>([]); // Especifica el tipo de array
+  const [, setIngredients] = useState<IMIngredients[]>([]); // Especifica el tipo de array
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
 
   const handleSelect = (ingredientName: string) => {
