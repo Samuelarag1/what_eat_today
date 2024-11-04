@@ -15,8 +15,12 @@ import { Input } from "@/components/ui/input";
 import data from "../../data.json";
 import { IMIngredients } from "../../Models/Ingredient";
 export default function Home() {
-  const [, setIngredients] = useState<IMIngredients[]>([]); // Especifica el tipo de array
+  const [ingredients, setIngredients] = useState<IMIngredients[]>([]);
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
+
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredIngredients, setFilteredIngredients] =
+    useState<IMIngredients[]>(ingredients);
 
   const handleSelect = (ingredientName: string) => {
     setSelectedIngredients((prevSelected) => {
@@ -38,25 +42,50 @@ export default function Home() {
     setIngredients(ingredientList);
   };
 
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const term = e.target.value;
+    setSearchTerm(term);
+
+    const normalizedTerm = term
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase();
+
+    const filtered = ingredients.filter((ingredient) => {
+      const normalizedIngredientName = ingredient.name
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+
+      return normalizedIngredientName.includes(normalizedTerm);
+    });
+
+    setFilteredIngredients(filtered);
+    console.log(filtered);
+  };
+
   useEffect(() => {
     getItems();
   }, []);
 
+  useEffect(() => {
+    setFilteredIngredients(ingredients);
+  }, [ingredients]);
   return (
     <>
-      <div className="bg-gradient-to-b from-[#72BCA5] to-[#101A16] h-screen w-full flex flex-col items-center align-middle">
+      <div className="bg-gradient-to-b from-[#72BCA5] to-[#101A16] h-screen w-full flex flex-col items-center">
         <Header />
 
-        <div className="h-36 bg-[#F1AE2B] mt-20 w-72 rounded-3xl shadow-black shadow-md border-2 border-black text-center flex flex-col justify-around items-center">
-          <p className="text-md font-bold text-shadow text-white">
-            No tenes ningun ingrediente agregado
-          </p>
+        <div className="flex flex-col justify-around  items-center h-full w-full">
+          <strong className="text-2xl text-shadow text-white text-center w-80">
+            Deja de pensar en qué cocinar y que la IA lo haga por ti...
+          </strong>
 
           <Dialog>
             <DialogTrigger asChild>
               <Button
                 variant="outline"
-                className="bg-[#BC0B27] w-fit p-3 rounded-full shadow-md shadow-black border-2 border-black hover:bg-black hover:transition-color duration-500 font-primary text-xl text-white hover:text-gray-300"
+                className="bg-[#BC0B27] w-fit p-6 rounded-full shadow-md shadow-black border-2 border-black hover:bg-black hover:transition-color duration-500 font-primary text-xl text-white hover:text-gray-300"
               >
                 Generar comida
               </Button>
@@ -65,33 +94,45 @@ export default function Home() {
               <DialogHeader className="text-white">
                 <DialogTitle>Ingredientes</DialogTitle>
                 <DialogDescription className="text-gray-400">
-                  Podes seleccionar o buscar los ingredientes que tenes en tu
+                  Puedes seleccionar o buscar los ingredientes que tienes en tu
                   casa.
                 </DialogDescription>
               </DialogHeader>
-              <Input placeholder="Buscar ingredientes" />
+              <Input
+                placeholder="Buscar ingredientes"
+                value={searchTerm}
+                onChange={handleSearch}
+                className="text-white"
+              />
 
               <div className="grid grid-cols-4 gap-4 py-4 h-36 overflow-y-auto">
-                {data.map((ingredient, index) => (
-                  <div
-                    key={index}
-                    className={`h-14 w-14 rounded-sm relative ${
-                      selectedIngredients.includes(ingredient.name)
-                        ? "border-green-500"
-                        : "border-gray-400"
-                    } border`}
-                  >
-                    <input
-                      type="checkbox"
-                      className="absolute top-0 left-0 h-full w-full opacity-0 cursor-pointer "
-                      checked={selectedIngredients.includes(ingredient.name)}
-                      onChange={() => handleSelect(ingredient.name)}
-                    />
-                    <p className="text-2xl flex items-center justify-center h-full w-full pointer-events-none">
-                      {ingredient.icon}
-                    </p>
-                  </div>
-                ))}
+                {filteredIngredients.length > 0 ? (
+                  filteredIngredients.map((ingredient, index) => (
+                    <div
+                      key={index}
+                      className={`h-14 w-14 rounded-sm relative ${
+                        selectedIngredients.includes(ingredient.name)
+                          ? "border-green-500"
+                          : "border-gray-400"
+                      } border mt-2 mb-2`}
+                    >
+                      <input
+                        type="checkbox"
+                        className="absolute top-0 left-0 h-full w-full opacity-0 cursor-pointer"
+                        checked={selectedIngredients.includes(ingredient.name)}
+                        onChange={() => handleSelect(ingredient.name)}
+                      />
+                      <p className="text-2xl flex items-center justify-center h-full w-full pointer-events-none">
+                        {ingredient.icon}
+                      </p>
+                      <p className="text-xs text-center text-white">
+                        {ingredient.name}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-white">No se encontraron ingredientes</p>
+                )}
               </div>
               <DialogFooter>
                 <Button
@@ -103,6 +144,15 @@ export default function Home() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+
+          <div className="h-40 bg-[#F1AE2B] w-80 rounded-3xl shadow-black shadow-md border-2 border-black text-center flex flex-col justify-around items-center mb-10 p-4">
+            <p className="text-xl font-semibold">Tus últimas recetas</p>
+            <div>
+              <strong className="text-md text-gray-800">
+                No tienes recetas generadas
+              </strong>
+            </div>
+          </div>
         </div>
       </div>
     </>
