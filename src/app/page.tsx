@@ -56,15 +56,15 @@ export default function Home() {
             <DialogTrigger asChild>
               <Button
                 variant="outline"
-                className="bg-[#BC0B27] w-fit p-3 rounded-full shadow-md shadow-black border-2 border-black hover:bg-[#b87f87] hover:transition-color duration-300 font-primary text-xl text-white hover:text-gray-200"
+                className="bg-[#BC0B27] w-fit p-3 rounded-full shadow-md shadow-black border-2 border-black hover:bg-black hover:transition-color duration-500 font-primary text-xl text-white hover:text-gray-300"
               >
                 Generar comida
               </Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
+              <DialogHeader className="text-white">
                 <DialogTitle>Ingredientes</DialogTitle>
-                <DialogDescription>
+                <DialogDescription className="text-gray-400">
                   Podes seleccionar o buscar los ingredientes que tenes en tu
                   casa.
                 </DialogDescription>
@@ -78,7 +78,7 @@ export default function Home() {
                     className={`h-14 w-14 rounded-sm relative ${
                       selectedIngredients.includes(ingredient.name)
                         ? "border-green-500"
-                        : "border-black"
+                        : "border-gray-400"
                     } border`}
                   >
                     <input
@@ -94,7 +94,12 @@ export default function Home() {
                 ))}
               </div>
               <DialogFooter>
-                <Button type="submit">Crear comida</Button>
+                <Button
+                  type="submit"
+                  className="bg-[#BC0B27] w-full p-3 rounded-full shadow-md shadow-black border-2 border-black hover:bg-[#F1AE2B] hover:transition-color duration-300 font-primary text-xl text-white hover:text-black"
+                >
+                  Crear
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
