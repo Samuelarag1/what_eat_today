@@ -1,7 +1,7 @@
 .hamburger {
   position: relative;
   cursor: pointer;
-  z-index: 15;
+  z-index: 999;
 }
 
 .hamburger input {
