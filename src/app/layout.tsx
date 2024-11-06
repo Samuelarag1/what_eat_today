@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { LanguageProvider } from "../../context/LanguageContext";
 
 export const metadata: Metadata = {
   title: "Que comemos hoy ?",
@@ -12,8 +13,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
+    <LanguageProvider>
+      <html lang="es">
+        <body>{children}</body>
+      </html>
+    </LanguageProvider>
   );
 }

@@ -1,14 +1,18 @@
 "use client";
 import Image from "next/image";
-import "./styles.css";
 import { useState } from "react";
+import "./styles.css";
+import { useLanguage } from "../../context/LanguageContext";
+import SwitchLanguage from "../SwitchLang";
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const { handleSelectIdiom, idiom } = useLanguage();
+  const { language } = useLanguage();
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+
   return (
     <>
       <div className="bg-black w-96 h-20 bg-opacity-50 rounded-full mt-5 flex items-center justify-around shadow-black shadow-lg">
@@ -22,8 +26,9 @@ export const Header = () => {
           />
         </div>
         <h1 className="text-white font-primary text-xl text-shadow">
-          ¿ Que comemos hoy ?
+          {language.pages.header.title}
         </h1>
+
         <div className="w-fit">
           <label className="hamburger">
             <input type="checkbox" checked={isOpen} onChange={toggleSidebar} />
@@ -36,9 +41,24 @@ export const Header = () => {
             </svg>
           </label>
         </div>
-        <aside className={`sidebar z-50 ${isOpen ? "open" : ""}`}>
-          <p>Este es el contenido del sidebar</p>
+
+        <aside
+          className={`sidebar z-50 ${
+            isOpen ? "open" : ""
+          } flex flex-col items-center`}
+        >
+          <p className="text-xl font-bold m-2">
+            {language.pages.header.switch}
+          </p>
+
+          <div>
+            <SwitchLanguage
+              handleSelectIdiom={handleSelectIdiom}
+              idiom={idiom}
+            />{" "}
+          </div>
         </aside>
+
         {isOpen && <div className="backdrop" onClick={toggleSidebar}></div>}
       </div>
     </>

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Header } from "../../components/header";
+import { Header } from "../../components/Header";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import data from "../../data.json";
 import { IMIngredients } from "../../Models/Ingredient";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function Home() {
   const [ingredients, setIngredients] = useState<IMIngredients[]>([]);
@@ -21,6 +22,7 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredIngredients, setFilteredIngredients] =
     useState<IMIngredients[]>(ingredients);
+  const { language } = useLanguage();
 
   const handleSelect = (ingredientName: string) => {
     setSelectedIngredients((prevSelected) => {
@@ -61,16 +63,29 @@ export default function Home() {
 
   const createRecipePrompt = () => {
     const prompt = {
-      prompt: `Crea una receta detallada utilizando únicamente los siguientes ingredientes: ${selectedIngredients.join(
+      prompt: `Crea 3 recetas detalladas utilizando únicamente los siguientes ingredientes: ${selectedIngredients.join(
         ", "
-      )}. Asume que cada ingrediente está disponible en una cantidad de 1 unidad, y que el usuario tiene acceso a agua para hervir o cocinar. Genera un JSON con el nombre de la receta y pasos descriptivos, sin imágenes.`,
+      )}. Asume que cada ingrediente está disponible en una cantidad de 1 unidad, y que el usuario tiene acceso a agua para hervir o cocinar. Genera un JSON con las siguientes claves para cada receta:
+          {
+            "nombre": "Receta 1",
+            "ingredientes": ["Tomate", "Queso", "Champiñones"],
+            "pasos": [
+              "Paso 1: Cortar los ingredientes.",
+              "Paso 2: Cocinar a fuego medio con agua.",
+              "Paso 3: Servir y disfrutar."
+            ]
+          }
+
+    No agregues código ni otros textos innecesarios. Solo responde con un JSON válido como el siguiente ejemplo:
+
+    Genera 3 recetas diferentes en el mismo formato de JSON sin ningún otro texto.
+    NO DEVUELVAS EL PROMPT ENVIADO
+    `,
     };
-    console.log(prompt);
     return prompt;
   };
-
   const handleGenerateRecipe = async () => {
-    const recipePrompt = createRecipePrompt();
+    const prompt = createRecipePrompt();
 
     try {
       const response = await fetch("/api/generateRecipe", {
@@ -78,11 +93,11 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(recipePrompt),
+        body: JSON.stringify({ prompt }),
       });
 
       const data = await response.json();
-      console.log("Receta generada:", data);
+      return data.response;
     } catch (error) {
       console.error("Error generando receta:", error);
     }
@@ -101,7 +116,7 @@ export default function Home() {
       <Header />
       <div className="flex flex-col justify-around items-center h-full w-full">
         <strong className="text-2xl text-shadow text-white text-center w-80">
-          Deja de pensar en qué cocinar y que la IA lo haga por ti...
+          {language.pages.home.title}
         </strong>
 
         <Dialog>
@@ -110,19 +125,18 @@ export default function Home() {
               variant="outline"
               className="bg-[#BC0B27] w-fit p-6 rounded-full shadow-md shadow-black border-2 border-black hover:bg-black hover:transition-color duration-500 font-primary text-xl text-white hover:text-gray-300"
             >
-              Generar comida
+              {language.pages.home.generateButton}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[425px]">
             <DialogHeader className="text-white">
-              <DialogTitle>Ingredientes</DialogTitle>
+              <DialogTitle>{language.pages.home.ingredientsTitle}</DialogTitle>
               <DialogDescription className="text-gray-400">
-                Puedes seleccionar o buscar los ingredientes que tienes en tu
-                casa.
+                {language.pages.home.ingredientsDescription}
               </DialogDescription>
             </DialogHeader>
             <Input
-              placeholder="Buscar ingredientes"
+              placeholder={language.pages.home.searchPlaceholder}
               value={searchTerm}
               onChange={handleSearch}
               className="text-white"
@@ -154,7 +168,9 @@ export default function Home() {
                   </div>
                 ))
               ) : (
-                <p className="text-white">No se encontraron ingredientes</p>
+                <p className="text-white">
+                  {language.pages.home.noIngredients}
+                </p>
               )}
             </div>
             <DialogFooter>
@@ -163,17 +179,20 @@ export default function Home() {
                 className="bg-[#BC0B27] w-full p-3 rounded-full shadow-md shadow-black border-2 border-black hover:bg-[#F1AE2B] hover:transition-color duration-300 font-primary text-xl text-white hover:text-black"
                 onClick={handleGenerateRecipe}
               >
-                Crear
+                {language.pages.home.createButton}
               </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
 
         <div className="h-40 bg-[#F1AE2B] w-80 rounded-3xl shadow-black shadow-md border-2 border-black text-center flex flex-col justify-around items-center mb-10 p-4">
-          <p className="text-xl font-semibold">Tus últimas recetas</p>
+          <p className="text-xl font-semibold">
+            {" "}
+            {language.pages.home.lastRecipes}
+          </p>
           <div>
             <strong className="text-md text-gray-800">
-              No tienes recetas generadas
+              {language.pages.home.noRecipes}
             </strong>
           </div>
         </div>
