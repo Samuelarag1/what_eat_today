@@ -6,75 +6,44 @@ import {
 } from "@/components/ui/accordion";
 import { useLanguage } from "../../context/LanguageContext";
 
-interface IRecipes {
-  recipes: IMRecipes;
+interface Recipe {
+  name: string;
+  ingredients: string[];
+  steps: string[];
 }
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-export function Recipes({ recipes }: IRecipes) {
+interface RecipesProps {
+  recipes: Recipe[];
+}
+
+export function Recipes({ recipes }: RecipesProps) {
   const { language } = useLanguage();
+
   return (
     <Accordion type="single" collapsible className="w-full text-white">
-      <AccordionItem value="item-1">
-        <AccordionTrigger>Receta 1</AccordionTrigger>
-        <AccordionContent>
-          <div>
-            <strong>
-              {language.recipes.ingredients} <p></p>
-            </strong>
-          </div>{" "}
-          <div className="mt-2">
-            <strong>{language.recipes.steps}</strong>
-            <ul>
-              <li>paso 1</li>
-              <li>paso 2</li>
-              <li>paso 3</li>
-              <li>paso 4</li>
-              <li>paso 5</li>
-            </ul>
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-2">
-        <AccordionTrigger>Receta 2</AccordionTrigger>
-        <AccordionContent>
-          <div>
-            <strong>
-              {language.recipes.ingredients} <p></p>
-            </strong>
-          </div>{" "}
-          <div className="mt-2">
-            <strong>{language.recipes.steps}</strong>
-            <ul>
-              <li>paso 1</li>
-              <li>paso 2</li>
-              <li>paso 3</li>
-              <li>paso 4</li>
-              <li>paso 5</li>
-            </ul>
-          </div>
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-3">
-        <AccordionTrigger>Receta 3</AccordionTrigger>
-        <AccordionContent>
-          <div>
-            <strong>
-              {language.recipes.ingredients} <p></p>
-            </strong>
-          </div>{" "}
-          <div className="mt-2">
-            <strong>{language.recipes.steps}</strong>
-            <ul>
-              <li>paso 1</li>
-              <li>paso 2</li>
-              <li>paso 3</li>
-              <li>paso 4</li>
-              <li>paso 5</li>
-            </ul>
-          </div>
-        </AccordionContent>
-      </AccordionItem>
+      {recipes.map((recipe, index) => (
+        <AccordionItem key={index} value={`item-${index + 1}`}>
+          <AccordionTrigger>{recipe.name}</AccordionTrigger>
+          <AccordionContent>
+            <div>
+              <strong>{language.recipes.ingredients}</strong>
+              <ul>
+                {recipe.ingredients.map((ingredient, i) => (
+                  <li key={i}>{ingredient}</li>
+                ))}
+              </ul>
+            </div>
+            <div className="mt-2">
+              <strong>{language.recipes.steps}</strong>
+              <ul>
+                {recipe.steps.map((step, j) => (
+                  <li key={j}>{step}</li>
+                ))}
+              </ul>
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      ))}
     </Accordion>
   );
 }

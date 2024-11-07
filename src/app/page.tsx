@@ -26,15 +26,11 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [recipesModalOpen, setRecipesModalOpen] = useState(false);
-  const [recipes, setRecipes] = useState<IMRecipes>({
-    name: "",
-    ingredients: [""],
-    steps: [""],
-  });
+  const [recipes, setRecipes] = useState<IMRecipes[]>([]);
   const [filteredIngredients, setFilteredIngredients] =
     useState<IMIngredients[]>(ingredients);
 
-  const genAI = new GoogleGenerativeAI(process.env.API_KEY!);
+  const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
   const { language } = useLanguage();
@@ -105,20 +101,26 @@ export default function Home() {
     setLoading(true);
     setModalOpen(false);
 
-    const result = await model.generateContent(prompt);
-    // setRecipes(result?.response?.candidates);
+    try {
+      const result = await model.generateContent(prompt);
 
-    setRecipes({
-      name: "Caprese",
-      ingredients: ["tomate, cebolla"],
-      steps: ["paso 1", "paso 2"],
-    });
+      if (result?.response?.candidates?.[0]?.content?.parts?.[0]?.text) {
+        const recipesText = result.response.candidates[0].content.parts[0].text;
+
+        const recipesArray = JSON.parse(recipesText);
+
+        setRecipes(recipesArray);
+      } else {
+        console.error("La estructura de la respuesta no es la esperada.");
+      }
+    } catch (error) {
+      console.error("Error al obtener las recetas:", error);
+    }
 
     setTimeout(() => {
       setLoading(false);
       setRecipesModalOpen(true);
     }, 2000);
-    return result;
   };
 
   useEffect(() => {
