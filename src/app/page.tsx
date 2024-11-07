@@ -15,13 +15,28 @@ import { Input } from "@/components/ui/input";
 import data from "../../data.json";
 import { IMIngredients } from "../../Models/Ingredient";
 import { useLanguage } from "../../context/LanguageContext";
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import Loading from "../../components/Loading";
+import { Recipes } from "../../components/Recipes";
 
 export default function Home() {
   const [ingredients, setIngredients] = useState<IMIngredients[]>([]);
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [recipesModalOpen, setRecipesModalOpen] = useState(false);
+  const [recipes, setRecipes] = useState<IMRecipes>({
+    name: "",
+    ingredients: [""],
+    steps: [""],
+  });
   const [filteredIngredients, setFilteredIngredients] =
     useState<IMIngredients[]>(ingredients);
+
+  const genAI = new GoogleGenerativeAI(process.env.API_KEY!);
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
   const { language } = useLanguage();
 
   const handleSelect = (ingredientName: string) => {
@@ -67,12 +82,12 @@ export default function Home() {
         ", "
       )}. Asume que cada ingrediente está disponible en una cantidad de 1 unidad, y que el usuario tiene acceso a agua para hervir o cocinar. Genera un JSON con las siguientes claves para cada receta:
           {
-            "nombre": "Receta 1",
-            "ingredientes": ["Tomate", "Queso", "Champiñones"],
-            "pasos": [
-              "Paso 1: Cortar los ingredientes.",
-              "Paso 2: Cocinar a fuego medio con agua.",
-              "Paso 3: Servir y disfrutar."
+            "name": "Receta 1",
+            "ingredients": ["ingrediente1", "ingrediente2", "ingrediente3"],
+            "steps": [
+              "Step 1: ...",
+              "Step 2: ...",
+              "Step 3: ..."
             ]
           }
 
@@ -82,25 +97,28 @@ export default function Home() {
     NO DEVUELVAS EL PROMPT ENVIADO
     `,
     };
-    return prompt;
+    return prompt.prompt.toString();
   };
+
   const handleGenerateRecipe = async () => {
     const prompt = createRecipePrompt();
+    setLoading(true);
+    setModalOpen(false);
 
-    try {
-      const response = await fetch("/api/generateRecipe", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt }),
-      });
+    const result = await model.generateContent(prompt);
+    // setRecipes(result?.response?.candidates);
 
-      const data = await response.json();
-      return data.response;
-    } catch (error) {
-      console.error("Error generando receta:", error);
-    }
+    setRecipes({
+      name: "Caprese",
+      ingredients: ["tomate, cebolla"],
+      steps: ["paso 1", "paso 2"],
+    });
+
+    setTimeout(() => {
+      setLoading(false);
+      setRecipesModalOpen(true);
+    }, 2000);
+    return result;
   };
 
   useEffect(() => {
@@ -112,91 +130,103 @@ export default function Home() {
   }, [ingredients]);
 
   return (
-    <div className="bg-gradient-to-b from-[#72BCA5] to-[#101A16] h-screen w-full flex flex-col items-center">
-      <Header />
-      <div className="flex flex-col justify-around items-center h-full w-full">
-        <strong className="text-2xl text-shadow text-white text-center w-80">
-          {language.pages.home.title}
-        </strong>
+    <>
+      <div className="bg-gradient-to-b from-[#72BCA5] to-[#101A16] h-screen w-full flex flex-col items-center">
+        <Header />
+        <div className="flex flex-col justify-around items-center h-full w-full">
+          <strong className="text-2xl text-shadow text-white text-center w-80">
+            {language.pages.home.title}
+          </strong>
 
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button
-              variant="outline"
-              className="bg-[#BC0B27] w-fit p-6 rounded-full shadow-md shadow-black border-2 border-black hover:bg-black hover:transition-color duration-500 font-primary text-xl text-white hover:text-gray-300"
-            >
-              {language.pages.home.generateButton}
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[425px]">
-            <DialogHeader className="text-white">
-              <DialogTitle>{language.pages.home.ingredientsTitle}</DialogTitle>
-              <DialogDescription className="text-gray-400">
-                {language.pages.home.ingredientsDescription}
-              </DialogDescription>
-            </DialogHeader>
-            <Input
-              placeholder={language.pages.home.searchPlaceholder}
-              value={searchTerm}
-              onChange={handleSearch}
-              className="text-white"
-            />
-
-            <div className="grid grid-cols-4 gap-4 py-4 h-36 overflow-y-auto">
-              {filteredIngredients.length > 0 ? (
-                filteredIngredients.map((ingredient, index) => (
-                  <div
-                    key={index}
-                    className={`h-14 w-14 rounded-sm relative ${
-                      selectedIngredients.includes(ingredient.name)
-                        ? "border-green-500"
-                        : "border-gray-400"
-                    } border mt-2 mb-2`}
-                  >
-                    <input
-                      type="checkbox"
-                      className="absolute top-0 left-0 h-full w-full opacity-0 cursor-pointer"
-                      checked={selectedIngredients.includes(ingredient.name)}
-                      onChange={() => handleSelect(ingredient.name)}
-                    />
-                    <p className="text-2xl flex items-center justify-center h-full w-full pointer-events-none">
-                      {ingredient.icon}
-                    </p>
-                    <p className="text-xs text-center text-white">
-                      {ingredient.name}
-                    </p>
-                  </div>
-                ))
-              ) : (
-                <p className="text-white">
-                  {language.pages.home.noIngredients}
-                </p>
-              )}
-            </div>
-            <DialogFooter>
+          <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+            <DialogTrigger asChild>
               <Button
-                type="button"
-                className="bg-[#BC0B27] w-full p-3 rounded-full shadow-md shadow-black border-2 border-black hover:bg-[#F1AE2B] hover:transition-color duration-300 font-primary text-xl text-white hover:text-black"
-                onClick={handleGenerateRecipe}
+                variant="outline"
+                className="bg-[#BC0B27] w-fit p-6 rounded-full shadow-md shadow-black border-2 border-black hover:bg-black hover:transition-color duration-500 font-primary text-xl text-white hover:text-gray-300"
               >
-                {language.pages.home.createButton}
+                {language.pages.home.generateButton}
               </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader className="text-white">
+                <DialogTitle>
+                  {language.pages.home.ingredientsTitle}
+                </DialogTitle>
+                <DialogDescription className="text-gray-400">
+                  {language.pages.home.ingredientsDescription}
+                </DialogDescription>
+              </DialogHeader>
+              <Input
+                placeholder={language.pages.home.searchPlaceholder}
+                value={searchTerm}
+                onChange={handleSearch}
+                className="text-white"
+              />
+              <div className="grid grid-cols-4 gap-4 py-4 h-36 overflow-y-auto">
+                {filteredIngredients.length > 0 ? (
+                  filteredIngredients.map((ingredient, index) => (
+                    <div
+                      key={index}
+                      className={`h-14 w-14 rounded-sm relative ${
+                        selectedIngredients.includes(ingredient.name)
+                          ? "border-green-500"
+                          : "border-gray-400"
+                      } border mt-2 mb-2`}
+                    >
+                      <input
+                        type="checkbox"
+                        className="absolute top-0 left-0 h-full w-full opacity-0 cursor-pointer"
+                        checked={selectedIngredients.includes(ingredient.name)}
+                        onChange={() => handleSelect(ingredient.name)}
+                      />
+                      <p className="text-2xl flex items-center justify-center h-full w-full pointer-events-none">
+                        {ingredient.icon}
+                      </p>
+                      <p className="text-xs text-center text-white">
+                        {ingredient.name}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-white">
+                    {language.pages.home.noIngredients}
+                  </p>
+                )}
+              </div>
+              <DialogFooter>
+                <Button
+                  type="button"
+                  className="bg-[#BC0B27] w-full p-3 rounded-full shadow-md shadow-black border-2 border-black hover:bg-[#F1AE2B] hover:transition-color duration-300 font-primary text-xl text-white hover:text-black"
+                  onClick={handleGenerateRecipe}
+                >
+                  {language.pages.home.createButton}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
 
-        <div className="h-40 bg-[#F1AE2B] w-80 rounded-3xl shadow-black shadow-md border-2 border-black text-center flex flex-col justify-around items-center mb-10 p-4">
-          <p className="text-xl font-semibold">
-            {" "}
-            {language.pages.home.lastRecipes}
-          </p>
-          <div>
-            <strong className="text-md text-gray-800">
-              {language.pages.home.noRecipes}
-            </strong>
+          <Dialog open={recipesModalOpen} onOpenChange={setRecipesModalOpen}>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogTitle className="text-white text-center">
+                {language.recipes.title}
+              </DialogTitle>
+              <Recipes recipes={recipes} />
+            </DialogContent>
+          </Dialog>
+
+          <div className="h-40 bg-[#F1AE2B] w-80 rounded-3xl shadow-black shadow-md border-2 border-black text-center flex flex-col justify-around items-center mb-10 p-4">
+            <p className="text-xl font-semibold">
+              {language.pages.home.lastRecipes}
+            </p>
+            <div>
+              <strong className="text-md text-gray-800">
+                {language.pages.home.noRecipes}
+              </strong>
+            </div>
           </div>
         </div>
+        {loading && <Loading />}
       </div>
-    </div>
+    </>
   );
 }

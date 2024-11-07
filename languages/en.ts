@@ -19,4 +19,12 @@ export const en: ILanguage = {
       switch: "Change language",
     },
   },
+  spinner: {
+    title: "Generating your recipes 😋",
+  },
+  recipes: {
+    title: "Recipes",
+    ingredients: "Ingredients",
+    steps: "Steps",
+  },
 };

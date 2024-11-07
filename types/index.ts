@@ -16,4 +16,12 @@ export interface ILanguage {
       switch: string;
     };
   };
+  spinner: {
+    title: string;
+  };
+  recipes: {
+    title: string;
+    ingredients: string;
+    steps: string;
+  };
 }
