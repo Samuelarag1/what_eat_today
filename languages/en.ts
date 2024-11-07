@@ -26,5 +26,6 @@ export const en: ILanguage = {
     title: "Recipes",
     ingredients: "Ingredients",
     steps: "Steps",
+    close: "Close",
   },
 };

@@ -18,22 +18,25 @@ import { useLanguage } from "../../context/LanguageContext";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Loading from "../../components/Loading";
 import { Recipes } from "../../components/Recipes";
-
+import { FaRegEye } from "react-icons/fa";
+/* eslint-disable */
 export default function Home() {
-  const [ingredients, setIngredients] = useState<IMIngredients[]>([]);
-  const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [recipesModalOpen, setRecipesModalOpen] = useState(false);
-  const [recipes, setRecipes] = useState<IMRecipes[]>([]);
-  const [filteredIngredients, setFilteredIngredients] =
-    useState<IMIngredients[]>(ingredients);
+  const { language } = useLanguage();
 
   const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY!);
   const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-  const { language } = useLanguage();
+  const [loading, setLoading] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [recipesModalOpen, setRecipesModalOpen] = useState(false);
+  const [ingredients, setIngredients] = useState<IMIngredients[]>([]);
+  const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
+  const [filteredIngredients, setFilteredIngredients] =
+    useState<IMIngredients[]>(ingredients);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [recipes, setRecipes] = useState<IMRecipes[]>([]);
+  const [recipesFetched, setRecipesFetched] = useState<IMRecipes[]>([]);
+  const [selectedRecipe, setSelectedRecipe] = useState<IMRecipes | null>(null);
 
   const handleSelect = (ingredientName: string) => {
     setSelectedIngredients((prevSelected) => {
@@ -44,7 +47,22 @@ export default function Home() {
       }
     });
   };
+  const handleRecipeClick = (recipe: IMRecipes) => {
+    setSelectedRecipe(recipe);
+  };
 
+  const fetchRecipes = async () => {
+    try {
+      const response = await fetch("/api/recipes");
+      if (!response.ok) {
+        throw new Error("Error al obtener las recetas");
+      }
+      const data = await response.json();
+      setRecipesFetched(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const getItems = () => {
     const ingredientList: IMIngredients[] = data.map((item) => ({
       name: item.name,
@@ -141,6 +159,7 @@ export default function Home() {
   };
 
   useEffect(() => {
+    fetchRecipes();
     getItems();
   }, []);
 
@@ -233,14 +252,70 @@ export default function Home() {
             </DialogContent>
           </Dialog>
 
-          <div className="h-40 bg-[#F1AE2B] w-80 rounded-3xl shadow-black shadow-md border-2 border-black text-center flex flex-col justify-around items-center mb-10 p-4">
-            <p className="text-xl font-semibold">
+          <div className="h-48 bg-[#F1AE2B] w-80 rounded-3xl shadow-black shadow-md border-2 border-black text-center flex flex-col justify-between items-center mb-10 p-4">
+            <p className="text-2xl font-semibold">
               {language.pages.home.lastRecipes}
             </p>
-            <div>
-              <strong className="text-md text-gray-800">
-                {language.pages.home.noRecipes}
-              </strong>
+            <div className="w-full">
+              {recipesFetched ? (
+                recipesFetched.map((recipe: IMRecipes, index: number) => (
+                  <div
+                    key={index}
+                    className="flex w-full justify-between gap-2 mb-2"
+                  >
+                    <strong>{recipe.name}</strong>
+                    <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+                      <DialogTrigger asChild>
+                        <div
+                          className="hover:cursor-pointer bg-[#BC0B27] p-1 rounded-full"
+                          onClick={() => handleRecipeClick(recipe)}
+                        >
+                          <FaRegEye size={30} />
+                        </div>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-[425px]">
+                        <DialogHeader className="text-white">
+                          <DialogTitle>{selectedRecipe?.name}</DialogTitle>{" "}
+                          <DialogDescription className="text-gray-400">
+                            {selectedRecipe?.ingredients}
+                          </DialogDescription>
+                        </DialogHeader>
+
+                        <div className="mt-2 text-white">
+                          <strong className="text-white">
+                            {language.recipes.steps}
+                          </strong>
+                          <ul>
+                            {
+                              // @ts-ignore
+                              selectedRecipe?.steps
+                                .toString()
+                                .split(" | ")
+                                .map((step: string, index: number) => (
+                                  <li key={index}>{step}</li>
+                                ))
+                            }
+                          </ul>
+                        </div>
+
+                        <DialogFooter>
+                          <Button
+                            type="button"
+                            className="bg-[#BC0B27] w-full p-3 rounded-full shadow-md shadow-black border-2 border-black hover:bg-[#F1AE2B] hover:transition-color duration-300 font-primary text-xl text-white hover:text-black"
+                            onClick={() => setModalOpen(false)}
+                          >
+                            {language.recipes.close}
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                ))
+              ) : (
+                <strong className="text-md text-gray-800">
+                  {language.pages.home.noRecipes}
+                </strong>
+              )}
             </div>
           </div>
         </div>

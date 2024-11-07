@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import prisma from "../../../lib/prisma";
 /* eslint-disable @typescript-eslint/no-unused-vars */
+
 export async function POST(req: Request) {
   try {
     const { name, ingredients, steps } = await req.json();
@@ -17,6 +18,19 @@ export async function POST(req: Request) {
   } catch (error) {
     return NextResponse.json(
       { error: "Error al guardar la receta" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function GET(req: Request) {
+  try {
+    const recipes = await prisma.recipe.findMany();
+
+    return NextResponse.json(recipes, { status: 200 });
+  } catch (error) {
+    return NextResponse.json(
+      { error: "Error al obtener las recetas" },
       { status: 500 }
     );
   }

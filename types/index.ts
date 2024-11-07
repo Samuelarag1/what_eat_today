@@ -23,5 +23,6 @@ export interface ILanguage {
     title: string;
     ingredients: string;
     steps: string;
+    close: string;
   };
 }
