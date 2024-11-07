@@ -256,7 +256,7 @@ export default function Home() {
             <p className="text-2xl font-semibold">
               {language.pages.home.lastRecipes}
             </p>
-            <div className="w-full">
+            <div className="w-full overflow-y-auto">
               {recipesFetched ? (
                 recipesFetched.map((recipe: IMRecipes, index: number) => (
                   <div
@@ -275,7 +275,7 @@ export default function Home() {
                       </DialogTrigger>
                       <DialogContent className="sm:max-w-[425px]">
                         <DialogHeader className="text-white">
-                          <DialogTitle>{selectedRecipe?.name}</DialogTitle>{" "}
+                          <DialogTitle>{selectedRecipe?.name}</DialogTitle>
                           <DialogDescription className="text-gray-400">
                             {selectedRecipe?.ingredients}
                           </DialogDescription>
