@@ -106,8 +106,25 @@ export default function Home() {
 
       if (result?.response?.candidates?.[0]?.content?.parts?.[0]?.text) {
         const recipesText = result.response.candidates[0].content.parts[0].text;
-
         const recipesArray = JSON.parse(recipesText);
+
+        for (const recipe of recipesArray) {
+          const response = await fetch("/api/recipes", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: recipe.name,
+              ingredients: recipe.ingredients.join(", "),
+              steps: recipe.steps.join(" | "),
+            }),
+          });
+
+          if (!response.ok) {
+            console.error("Error al guardar la receta");
+          }
+        }
 
         setRecipes(recipesArray);
       } else {
