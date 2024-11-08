@@ -29,6 +29,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [recipesModalOpen, setRecipesModalOpen] = useState(false);
+  const [modalOpenRecipeSpecify, setModalOpenRecipeSpecify] = useState(false);
   const [ingredients, setIngredients] = useState<IMIngredients[]>([]);
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
   const [filteredIngredients, setFilteredIngredients] =
@@ -252,7 +253,7 @@ export default function Home() {
             </DialogContent>
           </Dialog>
 
-          <div className="h-48 bg-[#F1AE2B] w-80 rounded-3xl shadow-black shadow-md border-2 border-black text-center flex flex-col justify-between items-center mb-10 p-4">
+          <div className="h-56 bg-[#F1AE2B] w-96 rounded-3xl shadow-black shadow-md border-2 border-black text-center flex flex-col justify-between items-center mb-10 p-4">
             <p className="text-2xl font-semibold">
               {language.pages.home.lastRecipes}
             </p>
@@ -264,7 +265,10 @@ export default function Home() {
                     className="flex w-full justify-between gap-2 mb-2"
                   >
                     <strong>{recipe.name}</strong>
-                    <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+                    <Dialog
+                      open={modalOpenRecipeSpecify}
+                      onOpenChange={setModalOpenRecipeSpecify}
+                    >
                       <DialogTrigger asChild>
                         <div
                           className="hover:cursor-pointer bg-[#BC0B27] p-1 rounded-full"
@@ -286,15 +290,12 @@ export default function Home() {
                             {language.recipes.steps}
                           </strong>
                           <ul>
-                            {
-                              // @ts-ignore
-                              selectedRecipe?.steps
-                                .toString()
-                                .split(" | ")
-                                .map((step: string, index: number) => (
-                                  <li key={index}>{step}</li>
-                                ))
-                            }
+                            {selectedRecipe?.steps
+                              .toString()
+                              .split(" | ")
+                              .map((step: string, index: number) => (
+                                <li key={index}>{step}</li>
+                              ))}
                           </ul>
                         </div>
 
@@ -302,7 +303,7 @@ export default function Home() {
                           <Button
                             type="button"
                             className="bg-[#BC0B27] w-full p-3 rounded-full shadow-md shadow-black border-2 border-black hover:bg-[#F1AE2B] hover:transition-color duration-300 font-primary text-xl text-white hover:text-black"
-                            onClick={() => setModalOpen(false)}
+                            onClick={() => setModalOpenRecipeSpecify(false)}
                           >
                             {language.recipes.close}
                           </Button>
