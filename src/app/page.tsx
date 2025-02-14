@@ -201,11 +201,6 @@ export default function Home() {
                 onChange={handleSearch}
                 className="text-white"
               />
-<<<<<<< HEAD
-              <input type="text" />
-
-=======
->>>>>>> 821041d01a0e2ee74a5cbbd71752d764f9014372
               <div className="grid grid-cols-4 gap-4 py-4 h-36 overflow-y-auto">
                 {filteredIngredients.length > 0 ? (
                   filteredIngredients.map((ingredient, index) => (
