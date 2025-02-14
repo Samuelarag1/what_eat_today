@@ -1,7 +1,7 @@
 .hamburger {
   position: relative;
   cursor: pointer;
-  z-index: 15;
+  z-index: 20;
 }
 
 .hamburger input {
@@ -63,4 +63,10 @@
   background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(2px);
   z-index: 1;
+}
+@media (max-width: 767px) {
+  .backdrop {
+    backdrop-filter: none;
+    background: none ;
+  }
 }
