@@ -104,6 +104,7 @@ export default function Home() {
                 onChange={handleSearch}
                 className="text-white"
               />
+              <input type="text" />
 
               <div className="grid grid-cols-4 gap-4 py-4 h-36 overflow-y-auto">
                 {filteredIngredients.length > 0 ? (
