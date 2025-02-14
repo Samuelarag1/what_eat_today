@@ -18,7 +18,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Loading from "../../components/Loading";
 import { Recipes } from "../../components/Recipes";
-import { FaRegEye } from "react-icons/fa";
+// import { FaRegEye } from "react-icons/fa";
 import {
   Tooltip,
   TooltipContent,
@@ -35,15 +35,15 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [recipesModalOpen, setRecipesModalOpen] = useState(false);
-  const [modalOpenRecipeSpecify, setModalOpenRecipeSpecify] = useState(false);
+  // const [modalOpenRecipeSpecify, setModalOpenRecipeSpecify] = useState(false);
   const [ingredients, setIngredients] = useState<IMIngredients[]>([]);
   const [selectedIngredients, setSelectedIngredients] = useState<string[]>([]);
   const [filteredIngredients, setFilteredIngredients] =
     useState<IMIngredients[]>(ingredients);
   const [searchTerm, setSearchTerm] = useState("");
   const [recipes, setRecipes] = useState<IMRecipes[]>([]);
-  const [recipesFetched, setRecipesFetched] = useState<IMRecipes[]>([]);
-  const [selectedRecipe, setSelectedRecipe] = useState<IMRecipes | null>(null);
+  const [, setRecipesFetched] = useState<IMRecipes[]>([]);
+  const [, setSelectedRecipe] = useState<IMRecipes | null>(null);
 
   const handleSelect = (ingredientName: string) => {
     setSelectedIngredients((prevSelected) => {
