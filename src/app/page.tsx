@@ -19,6 +19,12 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import Loading from "../../components/Loading";
 import { Recipes } from "../../components/Recipes";
 import { FaRegEye } from "react-icons/fa";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@radix-ui/react-tooltip";
 /* eslint-disable */
 export default function Home() {
   const { language } = useLanguage();
@@ -253,71 +259,15 @@ export default function Home() {
             </DialogContent>
           </Dialog>
 
-          <div className="h-56 bg-[#F1AE2B] w-96 rounded-3xl shadow-black shadow-md border-2 border-black text-center flex flex-col justify-between items-center mb-10 p-4">
-            <p className="text-2xl font-semibold">
-              {language.pages.home.lastRecipes}
-            </p>
-            <div className="w-full overflow-y-auto">
-              {recipesFetched ? (
-                recipesFetched.map((recipe: IMRecipes, index: number) => (
-                  <div
-                    key={index}
-                    className="flex w-full justify-between gap-2 mb-2"
-                  >
-                    <strong>{recipe.name}</strong>
-                    <Dialog
-                      open={modalOpenRecipeSpecify}
-                      onOpenChange={setModalOpenRecipeSpecify}
-                    >
-                      <DialogTrigger asChild>
-                        <div
-                          className="hover:cursor-pointer bg-[#BC0B27] p-1 rounded-full"
-                          onClick={() => handleRecipeClick(recipe)}
-                        >
-                          <FaRegEye size={30} />
-                        </div>
-                      </DialogTrigger>
-                      <DialogContent className="sm:max-w-[425px]">
-                        <DialogHeader className="text-white">
-                          <DialogTitle>{selectedRecipe?.name}</DialogTitle>
-                          <DialogDescription className="text-gray-400">
-                            {selectedRecipe?.ingredients}
-                          </DialogDescription>
-                        </DialogHeader>
-
-                        <div className="mt-2 text-white">
-                          <strong className="text-white">
-                            {language.recipes.steps}
-                          </strong>
-                          <ul>
-                            {selectedRecipe?.steps
-                              .toString()
-                              .split(" | ")
-                              .map((step: string, index: number) => (
-                                <li key={index}>{step}</li>
-                              ))}
-                          </ul>
-                        </div>
-
-                        <DialogFooter>
-                          <Button
-                            type="button"
-                            className="bg-[#BC0B27] w-full p-3 rounded-full shadow-md shadow-black border-2 border-black hover:bg-[#F1AE2B] hover:transition-color duration-300 font-primary text-xl text-white hover:text-black"
-                            onClick={() => setModalOpenRecipeSpecify(false)}
-                          >
-                            {language.recipes.close}
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  </div>
-                ))
-              ) : (
-                <strong className="text-md text-gray-800">
-                  {language.pages.home.noRecipes}
-                </strong>
-              )}
-            </div>
+          <div className="w-full flex items-center justify-center">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>Hover</TooltipTrigger>
+                <TooltipContent>
+                  <p>Te voy a enseñar como deberias instalarla</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           </div>
         </div>
         {loading && <Loading />}
