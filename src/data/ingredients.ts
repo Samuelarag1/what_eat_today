@@ -1,0 +1,53 @@
+import { Ingredient } from "@/types/domain";
+
+export const ingredients: Ingredient[] = [
+  { id: "tomato", emoji: "🍅", label: { es: "Tomate", en: "Tomato" }, category: "vegetable", tags: ["fresh", "juicy"] },
+  { id: "lettuce", emoji: "🥬", label: { es: "Lechuga", en: "Lettuce" }, category: "vegetable", tags: ["leafy", "fresh"] },
+  { id: "spinach", emoji: "🥬", label: { es: "Espinaca", en: "Spinach" }, category: "vegetable", tags: ["leafy", "green"] },
+  { id: "onion", emoji: "🧅", label: { es: "Cebolla", en: "Onion" }, category: "vegetable", tags: ["aromatic"] },
+  { id: "potato", emoji: "🥔", label: { es: "Papa", en: "Potato" }, category: "carb", tags: ["starchy", "comfort"] },
+  { id: "sweet-potato", emoji: "🍠", label: { es: "Camote", en: "Sweet potato" }, category: "carb", tags: ["starchy", "comfort"] },
+  { id: "carrot", emoji: "🥕", label: { es: "Zanahoria", en: "Carrot" }, category: "vegetable", tags: ["sweet", "fresh"] },
+  { id: "garlic", emoji: "🧄", label: { es: "Ajo", en: "Garlic" }, category: "condiment", tags: ["aromatic"] },
+  { id: "bell-pepper", emoji: "🫑", label: { es: "Pimiento", en: "Bell pepper" }, category: "vegetable", tags: ["fresh", "sweet"] },
+  { id: "mushrooms", emoji: "🍄", label: { es: "Champiñones", en: "Mushrooms" }, category: "vegetable", tags: ["savory"] },
+  { id: "zucchini", emoji: "🥒", label: { es: "Calabacin", en: "Zucchini" }, category: "vegetable", tags: ["green"] },
+  { id: "cucumber", emoji: "🥒", label: { es: "Pepino", en: "Cucumber" }, category: "vegetable", tags: ["fresh", "cold"] },
+  { id: "eggplant", emoji: "🍆", label: { es: "Berenjena", en: "Eggplant" }, category: "vegetable", tags: ["roasted", "savory"] },
+  { id: "broccoli", emoji: "🥦", label: { es: "Brocoli", en: "Broccoli" }, category: "vegetable", tags: ["green"] },
+  { id: "corn", emoji: "🌽", label: { es: "Maiz", en: "Corn" }, category: "carb", tags: ["sweet", "grain"] },
+  { id: "avocado", emoji: "🥑", label: { es: "Aguacate", en: "Avocado" }, category: "fruit", tags: ["creamy", "fresh"] },
+  { id: "lemon", emoji: "🍋", label: { es: "Limon", en: "Lemon" }, category: "fruit", tags: ["citrus", "fresh"] },
+  { id: "basil", emoji: "🌿", label: { es: "Albahaca", en: "Basil" }, category: "herb", tags: ["herb", "fresh"] },
+  { id: "parsley", emoji: "🌿", label: { es: "Perejil", en: "Parsley" }, category: "herb", tags: ["herb", "fresh"] },
+  { id: "chicken", emoji: "🍗", label: { es: "Pollo", en: "Chicken" }, category: "protein", tags: ["savory", "lean"] },
+  { id: "beef", emoji: "🥩", label: { es: "Carne", en: "Beef" }, category: "protein", tags: ["savory", "rich"] },
+  { id: "fish", emoji: "🐟", label: { es: "Pescado", en: "Fish" }, category: "protein", tags: ["lean", "sea"] },
+  { id: "tuna", emoji: "🐟", label: { es: "Atun", en: "Tuna" }, category: "protein", tags: ["sea", "quick"] },
+  { id: "eggs", emoji: "🥚", label: { es: "Huevos", en: "Eggs" }, category: "protein", tags: ["quick", "breakfast"] },
+  { id: "bread", emoji: "🍞", label: { es: "Pan", en: "Bread" }, category: "carb", tags: ["toast", "quick"] },
+  { id: "pasta", emoji: "🍝", label: { es: "Pasta", en: "Pasta" }, category: "carb", tags: ["grain", "comfort"] },
+  { id: "rice", emoji: "🍚", label: { es: "Arroz", en: "Rice" }, category: "carb", tags: ["grain", "mealprep"] },
+  { id: "tortilla-wheat", emoji: "🌯", label: { es: "Tortilla de trigo", en: "Wheat tortilla" }, category: "carb", tags: ["wrap", "quick"] },
+  { id: "tortilla-corn", emoji: "🌮", label: { es: "Tortilla de maiz", en: "Corn tortilla" }, category: "carb", tags: ["wrap", "quick"] },
+  { id: "flour", emoji: "🌾", label: { es: "Harina", en: "Flour" }, category: "carb", tags: ["baking"] },
+  { id: "cheese", emoji: "🧀", label: { es: "Queso", en: "Cheese" }, category: "dairy", tags: ["creamy", "savory"] },
+  { id: "milk", emoji: "🥛", label: { es: "Leche", en: "Milk" }, category: "dairy", tags: ["breakfast", "sweet"] },
+  { id: "yogurt", emoji: "🥣", label: { es: "Yogur", en: "Yogurt" }, category: "dairy", tags: ["fresh", "sweet"] },
+  { id: "beans", emoji: "🫘", label: { es: "Frijoles", en: "Beans" }, category: "legume", tags: ["plant-protein", "mealprep"] },
+  { id: "chickpeas", emoji: "🫘", label: { es: "Garbanzos", en: "Chickpeas" }, category: "legume", tags: ["plant-protein", "mealprep"] },
+  { id: "lentils", emoji: "🫘", label: { es: "Lentejas", en: "Lentils" }, category: "legume", tags: ["plant-protein", "mealprep"] },
+  { id: "apple", emoji: "🍎", label: { es: "Manzana", en: "Apple" }, category: "fruit", tags: ["sweet", "fresh"] },
+  { id: "orange", emoji: "🍊", label: { es: "Naranja", en: "Orange" }, category: "fruit", tags: ["citrus", "fresh"] },
+  { id: "grapes", emoji: "🍇", label: { es: "Uvas", en: "Grapes" }, category: "fruit", tags: ["sweet", "fresh"] },
+  { id: "strawberries", emoji: "🍓", label: { es: "Fresas", en: "Strawberries" }, category: "fruit", tags: ["sweet", "fresh"] },
+  { id: "banana", emoji: "🍌", label: { es: "Banana", en: "Banana" }, category: "fruit", tags: ["sweet", "breakfast"] },
+  { id: "watermelon", emoji: "🍉", label: { es: "Sandia", en: "Watermelon" }, category: "fruit", tags: ["fresh", "cold"] },
+  { id: "honey", emoji: "🍯", label: { es: "Miel", en: "Honey" }, category: "condiment", tags: ["sweet"] },
+  { id: "chocolate", emoji: "🍫", label: { es: "Chocolate", en: "Chocolate" }, category: "condiment", tags: ["sweet"] },
+  { id: "mustard", emoji: "🟡", label: { es: "Mostaza", en: "Mustard" }, category: "condiment", tags: ["savory", "quick"] }
+];
+
+export const ingredientMap = new Map(ingredients.map((ingredient) => [ingredient.id, ingredient]));
+
+export const minimumIngredientsForRecipes = 2;
